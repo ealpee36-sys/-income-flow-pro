@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#007aff">
+
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="styles.css">
+
+<title>IncomeFlow Pro</title>
+</head>
+
+<body>
+
+<h1>💰 IncomeFlow Pro</h1>
+
+<div class="card">
+  <input type="number" id="salary" placeholder="Net Salary">
+  <input type="number" id="allowance" placeholder="Allowances">
+  <button onclick="saveData()">Save</button>
+</div>
+
+<div class="card">
+  <h2 id="result">¥0</h2>
+</div>
+
+<script src="app.js"></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
+</script>
+
+</body>
+</html>
