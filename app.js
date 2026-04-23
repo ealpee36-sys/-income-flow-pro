@@ -1,20 +1,45 @@
-function saveData() {
-  let salary = parseInt(document.getElementById("salary").value) || 0;
-  let allowance = parseInt(document.getElementById("allowance").value) || 0;
+let incomes = JSON.parse(localStorage.getItem("incomes")) || [];
 
-  let worked = salary - allowance;
+function render() {
+  const list = document.getElementById("list");
+  const totalEl = document.getElementById("total");
 
-  document.getElementById("result").innerText =
-    new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(worked);
+  list.innerHTML = "";
 
-  localStorage.setItem("salary", salary);
-  localStorage.setItem("allowance", allowance);
+  let total = 0;
+
+  incomes.forEach((amount, index) => {
+    total += amount;
+
+    const li = document.createElement("li");
+    li.textContent = "¥" + amount;
+
+    li.onclick = () => {
+      incomes.splice(index, 1);
+      save();
+    };
+
+    list.appendChild(li);
+  });
+
+  totalEl.textContent = total;
 }
 
-window.onload = () => {
-  let salary = localStorage.getItem("salary") || 0;
-  let allowance = localStorage.getItem("allowance") || 0;
+function addIncome() {
+  const input = document.getElementById("amount");
+  const value = Number(input.value);
 
-  document.getElementById("salary").value = salary;
-  document.getElementById("allowance").value = allowance;
-};
+  if (!value) return;
+
+  incomes.push(value);
+  input.value = "";
+
+  save();
+}
+
+function save() {
+  localStorage.setItem("incomes", JSON.stringify(incomes));
+  render();
+}
+
+render();
