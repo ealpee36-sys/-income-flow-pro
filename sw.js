@@ -1,4 +1,4 @@
-const CACHE_NAME = "income-flow-v2";
+const CACHE_NAME = "income-flow-v1";
 
 const urlsToCache = [
   "./",
