@@ -4,43 +4,1212 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#007aff">
-
-  <!-- iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="IncomeFlow Pro">
-
+  <meta name="description" content="Professional Income & Salary Manager with JPY currency - Track salary, allowances, tax, and generate reports">
   <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23007aff'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='Arial'%3E💰%3C/text%3E%3C/svg%3E">
+  <title>IncomeFlow Pro — Salary Manager</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  <title>IncomeFlow Pro</title>
+    body {
+      background: #f5f5f7;
+      font-family: -apple-system, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', system-ui, BlinkMacSystemFont, sans-serif;
+      padding: 20px 16px 40px;
+      color: #1c1c1e;
+    }
 
-  <link rel="stylesheet" href="styles.css">
+    .install-banner {
+      background: #007aff;
+      border-radius: 20px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,122,255,0.3);
+    }
+
+    .install-banner.hidden {
+      display: none;
+    }
+
+    .install-banner span {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .install-banner button {
+      background: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-weight: 600;
+      color: #007aff;
+      cursor: pointer;
+    }
+
+    .app-container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .ios-header {
+      margin-bottom: 28px;
+      padding-top: 8px;
+    }
+
+    .ios-header h1 {
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #1c1c1e, #3a3a44);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ios-header h1::before {
+      content: "💰";
+      background: none;
+      -webkit-background-clip: unset;
+      color: #007aff;
+      font-size: 32px;
+    }
+
+    .subhead {
+      font-size: 15px;
+      color: #8e8e93;
+      margin-top: 6px;
+      font-weight: 400;
+    }
+
+    .ios-card {
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 20px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04), 0 0 0 0.5px rgba(0, 0, 0, 0.03);
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 0.5px solid rgba(224, 224, 230, 0.6);
+    }
+
+    .segment-group {
+      margin-bottom: 24px;
+    }
+
+    .segment-label {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      color: #8e8e93;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .segment-scroll {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .year-input-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .year-input-group .ios-input {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .ios-segment {
+      background: #e9e9ef;
+      border-radius: 40px;
+      padding: 8px 18px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #1c1c1e;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+    }
+
+    .ios-segment.active {
+      background: #007aff;
+      color: white;
+      box-shadow: 0 2px 8px rgba(0,122,255,0.25);
+    }
+
+    .job-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #e9e9ef;
+      border-radius: 40px;
+      padding: 4px 4px 4px 18px;
+    }
+
+    .job-item .job-name {
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 8px 0;
+    }
+
+    .job-item .job-name.editing {
+      display: none;
+    }
+
+    .job-item .job-input {
+      display: none;
+      background: white;
+      border: 1px solid #007aff;
+      border-radius: 30px;
+      padding: 6px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      width: 120px;
+    }
+
+    .job-item .job-input.editing {
+      display: block;
+    }
+
+    .job-item .edit-btn, .job-item .save-btn, .job-item .delete-job-btn {
+      background: transparent;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 6px 8px;
+      border-radius: 30px;
+      transition: 0.2s;
+    }
+
+    .job-item .edit-btn { color: #007aff; }
+    .job-item .save-btn { color: #34c759; display: none; }
+    .job-item .save-btn.editing { display: block; }
+    .job-item .edit-btn.editing { display: none; }
+    .job-item .delete-job-btn { color: #ff3b30; }
+
+    .job-add-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+      align-items: center;
+    }
+
+    .ios-input {
+      background: #f9f9fb;
+      border: 0.5px solid #d9d9df;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 16px;
+      font-family: inherit;
+      outline: none;
+      transition: 0.2s;
+      width: 100%;
+    }
+
+    .ios-input:focus {
+      border-color: #007aff;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(0,122,255,0.1);
+    }
+
+    .ios-button {
+      background: #007aff;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-weight: 600;
+      font-size: 16px;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .ios-button-secondary {
+      background: #e9e9ef;
+      color: #007aff;
+    }
+
+    .ios-button-danger {
+      background: #ff3b30;
+      color: white;
+    }
+
+    .ios-button-sm {
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+
+    .ios-button-green {
+      background: #34c759;
+    }
+
+    .form-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin: 20px 0 12px;
+    }
+
+    .input-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .input-field label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #3a3a44;
+    }
+
+    .summary-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .stat-row {
+      background: #f9f9fb;
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border: 0.5px solid #efeff4;
+    }
+
+    .stat-label {
+      font-size: 15px;
+      color: #6c6c70;
+    }
+
+    .stat-number {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1c1c1e;
+      letter-spacing: -0.3px;
+    }
+
+    .total-highlight {
+      background: #007aff10;
+      border-left: 4px solid #007aff;
+    }
+
+    .date-range-bar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .date-range-bar .ios-input {
+      flex: 1;
+      min-width: 100px;
+    }
+
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 16px 0 12px;
+    }
+
+    .chip {
+      background: #f2f2f6;
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.2s;
+      color: #007aff;
+    }
+
+    .chip.active {
+      background: #007aff;
+      color: white;
+    }
+
+    .ios-table-wrapper {
+      overflow-x: auto;
+      border-radius: 16px;
+      margin-top: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .ios-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .ios-table th {
+      text-align: left;
+      padding: 14px 10px;
+      background: #f9f9fb;
+      color: #6c6c70;
+      font-weight: 600;
+      border-bottom: 0.5px solid #e9e9ef;
+      position: sticky;
+      top: 0;
+      background: #f9f9fb;
+    }
+
+    .ios-table td {
+      padding: 14px 10px;
+      border-bottom: 0.5px solid #efeff4;
+      color: #1c1c1e;
+    }
+
+    .total-row {
+      background: #f2f2f6;
+      font-weight: 600;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: #8e8e93;
+    }
+
+    .download-bar {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      justify-content: flex-end;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-container {
+      background: white;
+      border-radius: 28px;
+      width: 300px;
+      max-width: 85%;
+      padding: 24px 20px 20px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      transform: scale(0.95);
+      transition: transform 0.2s ease;
+    }
+
+    .modal-overlay.active .modal-container {
+      transform: scale(1);
+    }
+
+    .modal-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #1c1c1e;
+    }
+
+    .modal-message {
+      font-size: 15px;
+      color: #6c6c70;
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .modal-btn-cancel {
+      background: #e9e9ef;
+      color: #007aff;
+    }
+
+    .modal-btn-confirm {
+      background: #ff3b30;
+      color: white;
+    }
+
+    .reset-btn-container {
+      margin-top: 12px;
+    }
+
+    @media (max-width: 540px) {
+      body {
+        padding: 16px 12px;
+      }
+      .stat-number {
+        font-size: 18px;
+      }
+      .download-bar {
+        flex-direction: column;
+      }
+      .download-bar .ios-button {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
-
 <body>
 <div class="app-container">
+  <div id="installBanner" class="install-banner hidden">
+    <span>📱 Install IncomeFlow Pro for easy access</span>
+    <button id="installBtn">Install</button>
+  </div>
 
-  <h1>💰 IncomeFlow Pro</h1>
+  <div class="ios-header">
+    <h1>IncomeFlow Pro</h1>
+    <div class="subhead">Salary · Tax · Allowances · Worked Income (Net − Allow.) · JPY</div>
+  </div>
 
-  <input type="number" id="amount" placeholder="Enter amount">
-  <button onclick="addIncome()">Add</button>
+  <div class="ios-card">
+    <div class="segment-group">
+      <div class="segment-label">📅 1. Year & Month</div>
+      <div class="year-input-group">
+        <input type="number" id="yearInput" class="ios-input" placeholder="Enter year" value="2024" step="1">
+        <button id="setYearBtn" class="ios-button ios-button-sm" style="background:#5856d6;">Set Year</button>
+      </div>
+      <div class="segment-scroll" id="monthsContainer"></div>
+    </div>
 
-  <ul id="list"></ul>
+    <div class="segment-group">
+      <div class="segment-label">🏢 2. Select / Edit Job</div>
+      <div class="segment-scroll" id="jobsContainer"></div>
+      <div class="job-add-row">
+        <input type="text" id="newJobField" class="ios-input" placeholder="New company name" autocomplete="off">
+        <button id="addJobBtn" class="ios-button ios-button-sm" style="background:#34c759;">+ Add</button>
+      </div>
+    </div>
+  </div>
 
-  <h2>Total: ¥<span id="total">0</span></h2>
+  <div class="ios-card">
+    <div class="segment-label">💰 3. Income Details (JPY)</div>
+    <div class="form-grid">
+      <div class="input-field">
+        <label>🏦 Net Salary (received)</label>
+        <input type="number" id="netSalaryInput" class="ios-input" step="1" placeholder="0">
+      </div>
+      <div class="input-field">
+        <label>✨ Allowances</label>
+        <input type="number" id="allowancesInput" class="ios-input" step="1" placeholder="0">
+      </div>
+      <div class="input-field">
+        <label>📉 Income Tax</label>
+        <input type="number" id="taxInput" class="ios-input" step="1" placeholder="0">
+      </div>
+    </div>
+    <div style="display: flex; gap: 12px; margin-top: 8px;">
+      <button id="saveEntryBtn" class="ios-button" style="flex:2;">💾 Save Entry</button>
+      <button id="clearEntryBtn" class="ios-button ios-button-secondary" style="flex:1;">Clear</button>
+    </div>
+    <div class="reset-btn-container">
+      <button id="resetAllDataBtn" class="ios-button ios-button-danger" style="width:100%; margin-top:12px;">🗑️ Reset All Data</button>
+    </div>
+  </div>
 
+  <div class="ios-card">
+    <div class="segment-label">📈 Current Summary</div>
+    <div class="summary-stats">
+      <div class="stat-row"><span class="stat-label">Selected</span><span class="stat-number" id="selectedInfoLabel">— · —</span></div>
+      <div class="stat-row"><span class="stat-label">Net Salary</span><span class="stat-number" id="summaryNetVal">¥0</span></div>
+      <div class="stat-row"><span class="stat-label">Allowances</span><span class="stat-number" id="summaryAllowVal">¥0</span></div>
+      <div class="stat-row"><span class="stat-label">Income Tax</span><span class="stat-number" id="summaryTaxVal">¥0</span></div>
+      <div class="stat-row total-highlight"><span class="stat-label">💵 Worked Income (Net − Allow.)</span><span class="stat-number" id="workedIncomeVal">¥0</span></div>
+    </div>
+  </div>
+
+  <div class="ios-card">
+    <div class="segment-label">📋 Reports · Company wise</div>
+    <div class="date-range-bar">
+      <input type="number" id="startYearInput" class="ios-input" placeholder="Start year" value="2024" step="1">
+      <select id="startMonthSelect" class="ios-input"></select>
+      <span>→</span>
+      <input type="number" id="endYearInput" class="ios-input" placeholder="End year" value="2024" step="1">
+      <select id="endMonthSelect" class="ios-input"></select>
+      <button id="applyRangeBtn" class="ios-button ios-button-sm" style="background:#5856d6;">Apply</button>
+    </div>
+    <div class="segment-label" style="margin-top: 8px;">Filter by company</div>
+    <div class="chip-group" id="reportCompanyChips"></div>
+    <div class="ios-table-wrapper">
+      <table class="ios-table">
+        <thead><tr><th>Month</th><th>Company</th><th>Net Salary (¥)</th><th>Allowances (¥)</th><th>Tax (¥)</th><th>Worked Income (¥)</th></tr></thead>
+        <tbody id="reportTableBody"><tr><td colspan="6" class="empty-state">Select date range & company to view reports</td></tr></tbody>
+      .</
+    </div>
+    <div class="download-bar">
+      <button id="downloadCSVBtn" class="ios-button ios-button-green">📎 Download CSV</button>
+      <button id="downloadJSONBtn" class="ios-button" style="background:#5856d6;">📄 Download JSON</button>
+    </div>
+  </div>
 </div>
 
-<script src="app.js"></script>
+<div id="resetModal" class="modal-overlay">
+  <div class="modal-container">
+    <div class="modal-icon">⚠️</div>
+    <div class="modal-title">Reset All Data</div>
+    <div class="modal-message">Are you sure you want to delete ALL income records? This action cannot be undone.</div>
+    <div class="modal-buttons">
+      <button class="modal-btn modal-btn-cancel" id="modalCancelBtn">Cancel</button>
+      <button class="modal-btn modal-btn-confirm" id="modalConfirmBtn">Reset</button>
+    </div>
+  </div>
+</div>
 
 <script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js");
+  // ==================== DATA MODEL ====================
+  let incomeRecords = [];
+  let companies = ["Company A", "Company B"];
+  
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  
+  let currentYear = 2024;
+  let currentMonthIdx = 0;
+  let currentCompany = "Company A";
+  
+  let reportStartYear = 2024;
+  let reportStartMonth = 0;
+  let reportEndYear = 2024;
+  let reportEndMonth = 11;
+  let reportCompanyFilter = "ALL";
+  
+  // Flag to track if demo data has been seeded
+  let demoSeeded = false;
+  
+  // ==================== PWA Installation ====================
+  let deferredPrompt = null;
+  const installBanner = document.getElementById('installBanner');
+  const installBtn = document.getElementById('installBtn');
+  
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBanner.classList.remove('hidden');
   });
-}
+  
+  installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        installBanner.classList.add('hidden');
+      }
+      deferredPrompt = null;
+    }
+  });
+  
+  window.addEventListener('appinstalled', () => {
+    installBanner.classList.add('hidden');
+    deferredPrompt = null;
+  });
+  
+  // ==================== Helper Functions ====================
+  function formatMonthYearDisplay(year, monthIdx) {
+    return `${monthNames[monthIdx]} ${year}`;
+  }
+  
+  function formatJPY(value) {
+    return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY', minimumFractionDigits: 0 }).format(value);
+  }
+  
+  function calculateWorkedIncome(netSalary, allowances) {
+    return netSalary - allowances;
+  }
+  
+  // ==================== LocalStorage ====================
+  function loadStorage() {
+    const storedRecords = localStorage.getItem("incomeFlowProData");
+    if(storedRecords) {
+      try { 
+        incomeRecords = JSON.parse(storedRecords); 
+      } catch(e) { 
+        incomeRecords = []; 
+      }
+    } else {
+      incomeRecords = [];
+    }
+    
+    const storedCompanies = localStorage.getItem("incomeFlowProCompanies");
+    if(storedCompanies) {
+      try { 
+        companies = JSON.parse(storedCompanies); 
+        if(!companies.length) companies = ["Company A", "Company B"]; 
+      } catch(e) {
+        companies = ["Company A", "Company B"];
+      }
+    } else {
+      companies = ["Company A", "Company B"];
+    }
+    
+    // Load current selections
+    const storedCurrentYear = localStorage.getItem("incomeFlowProCurrentYear");
+    if(storedCurrentYear) currentYear = parseInt(storedCurrentYear);
+    
+    const storedCurrentMonth = localStorage.getItem("incomeFlowProCurrentMonth");
+    if(storedCurrentMonth) currentMonthIdx = parseInt(storedCurrentMonth);
+    
+    const storedCurrentCompany = localStorage.getItem("incomeFlowProCurrentCompany");
+    if(storedCurrentCompany && companies.includes(storedCurrentCompany)) currentCompany = storedCurrentCompany;
+    
+    const storedReportStartYear = localStorage.getItem("incomeFlowProReportStartYear");
+    if(storedReportStartYear) reportStartYear = parseInt(storedReportStartYear);
+    
+    const storedReportStartMonth = localStorage.getItem("incomeFlowProReportStartMonth");
+    if(storedReportStartMonth) reportStartMonth = parseInt(storedReportStartMonth);
+    
+    const storedReportEndYear = localStorage.getItem("incomeFlowProReportEndYear");
+    if(storedReportEndYear) reportEndYear = parseInt(storedReportEndYear);
+    
+    const storedReportEndMonth = localStorage.getItem("incomeFlowProReportEndMonth");
+    if(storedReportEndMonth) reportEndMonth = parseInt(storedReportEndMonth);
+    
+    const storedReportFilter = localStorage.getItem("incomeFlowProReportFilter");
+    if(storedReportFilter) reportCompanyFilter = storedReportFilter;
+    
+    if(!companies.includes(currentCompany)) currentCompany = companies[0];
+  }
+  
+  function saveCurrentSelections() {
+    localStorage.setItem("incomeFlowProCurrentYear", currentYear);
+    localStorage.setItem("incomeFlowProCurrentMonth", currentMonthIdx);
+    localStorage.setItem("incomeFlowProCurrentCompany", currentCompany);
+    localStorage.setItem("incomeFlowProReportStartYear", reportStartYear);
+    localStorage.setItem("incomeFlowProReportStartMonth", reportStartMonth);
+    localStorage.setItem("incomeFlowProReportEndYear", reportEndYear);
+    localStorage.setItem("incomeFlowProReportEndMonth", reportEndMonth);
+    localStorage.setItem("incomeFlowProReportFilter", reportCompanyFilter);
+  }
+  
+  function saveAll() {
+    localStorage.setItem("incomeFlowProData", JSON.stringify(incomeRecords));
+    localStorage.setItem("incomeFlowProCompanies", JSON.stringify(companies));
+    saveCurrentSelections();
+  }
+  
+  // ==================== Reset All Data ====================
+  function showResetModal() {
+    document.getElementById('resetModal').classList.add('active');
+  }
+  
+  function hideResetModal() {
+    document.getElementById('resetModal').classList.remove('active');
+  }
+  
+  function resetAllData() {
+    // Clear all data
+    incomeRecords = [];
+    companies = ["Company A", "Company B"];
+    currentCompany = "Company A";
+    currentYear = 2024;
+    currentMonthIdx = 0;
+    reportStartYear = 2024;
+    reportStartMonth = 0;
+    reportEndYear = 2024;
+    reportEndMonth = 11;
+    reportCompanyFilter = "ALL";
+    
+    // Save empty state to localStorage
+    saveAll();
+    
+    // Re-render everything
+    renderJobs();
+    renderCompanyChips();
+    updateSummaryAndForm();
+    refreshReportTable();
+    updateMonthSelectors();
+    renderMonths();
+    
+    // Update input fields
+    document.getElementById("yearInput").value = currentYear;
+    document.getElementById("startYearInput").value = reportStartYear;
+    document.getElementById("endYearInput").value = reportEndYear;
+    
+    hideResetModal();
+  }
+  
+  // ==================== Core Functions ====================
+  function getCurrentRecord() {
+    return incomeRecords.find(r => r.year === currentYear && r.month === currentMonthIdx && r.company === currentCompany);
+  }
+  
+  function updateSummaryAndForm() {
+    const record = getCurrentRecord();
+    document.getElementById("selectedInfoLabel").innerHTML = `${formatMonthYearDisplay(currentYear, currentMonthIdx)} · ${currentCompany}`;
+    if(record) {
+      document.getElementById("summaryNetVal").innerHTML = formatJPY(record.netSalary);
+      document.getElementById("summaryAllowVal").innerHTML = formatJPY(record.allowances);
+      document.getElementById("summaryTaxVal").innerHTML = formatJPY(record.tax);
+      document.getElementById("workedIncomeVal").innerHTML = formatJPY(calculateWorkedIncome(record.netSalary, record.allowances));
+      document.getElementById("netSalaryInput").value = record.netSalary;
+      document.getElementById("allowancesInput").value = record.allowances;
+      document.getElementById("taxInput").value = record.tax;
+    } else {
+      document.getElementById("summaryNetVal").innerHTML = formatJPY(0);
+      document.getElementById("summaryAllowVal").innerHTML = formatJPY(0);
+      document.getElementById("summaryTaxVal").innerHTML = formatJPY(0);
+      document.getElementById("workedIncomeVal").innerHTML = formatJPY(0);
+      document.getElementById("netSalaryInput").value = "";
+      document.getElementById("allowancesInput").value = "";
+      document.getElementById("taxInput").value = "";
+    }
+    saveCurrentSelections();
+  }
+  
+  function saveCurrentEntry() {
+    let net = parseInt(document.getElementById("netSalaryInput").value) || 0;
+    let allow = parseInt(document.getElementById("allowancesInput").value) || 0;
+    let tax = parseInt(document.getElementById("taxInput").value) || 0;
+    const existingIdx = incomeRecords.findIndex(r => r.year === currentYear && r.month === currentMonthIdx && r.company === currentCompany);
+    const newRecord = { year: currentYear, month: currentMonthIdx, company: currentCompany, netSalary: net, allowances: allow, tax: tax };
+    if(existingIdx !== -1) incomeRecords[existingIdx] = newRecord;
+    else incomeRecords.push(newRecord);
+    saveAll();
+    updateSummaryAndForm();
+    refreshReportTable();
+    updateMonthSelectors();
+  }
+  
+  function clearCurrentEntry() {
+    const idx = incomeRecords.findIndex(r => r.year === currentYear && r.month === currentMonthIdx && r.company === currentCompany);
+    if(idx !== -1) {
+      incomeRecords.splice(idx, 1);
+      saveAll();
+      updateSummaryAndForm();
+      refreshReportTable();
+      updateMonthSelectors();
+    } else {
+      document.getElementById("netSalaryInput").value = "";
+      document.getElementById("allowancesInput").value = "";
+      document.getElementById("taxInput").value = "";
+      updateSummaryAndForm();
+    }
+  }
+  
+  function setYear() {
+    let newYear = parseInt(document.getElementById("yearInput").value);
+    if(isNaN(newYear)) { alert("Please enter a valid year"); return; }
+    currentYear = newYear;
+    saveCurrentSelections();
+    updateSummaryAndForm();
+    refreshReportTable();
+  }
+  
+  // ==================== Editable Jobs Rendering ====================
+  function renderJobs() {
+    const container = document.getElementById("jobsContainer");
+    container.innerHTML = "";
+    
+    companies.forEach((comp, idx) => {
+      const jobDiv = document.createElement("div");
+      jobDiv.className = "job-item";
+      if (comp === currentCompany) {
+        jobDiv.style.background = "#007aff";
+      } else {
+        jobDiv.style.background = "#e9e9ef";
+      }
+      
+      const nameSpan = document.createElement("span");
+      nameSpan.className = "job-name";
+      nameSpan.innerText = comp;
+      nameSpan.style.color = comp === currentCompany ? "white" : "#1c1c1e";
+      
+      const editInput = document.createElement("input");
+      editInput.type = "text";
+      editInput.className = "job-input";
+      editInput.value = comp;
+      editInput.maxLength = 30;
+      
+      const editBtn = document.createElement("button");
+      editBtn.className = "edit-btn";
+      editBtn.innerHTML = "✏️";
+      editBtn.title = "Edit company name";
+      
+      const saveBtn = document.createElement("button");
+      saveBtn.className = "save-btn";
+      saveBtn.innerHTML = "✓";
+      saveBtn.title = "Save changes";
+      
+      const deleteBtn = document.createElement("button");
+      deleteBtn.className = "delete-job-btn";
+      deleteBtn.innerHTML = "🗑️";
+      deleteBtn.title = "Delete company";
+      
+      editBtn.addEventListener("click", () => {
+        nameSpan.classList.add("editing");
+        editInput.classList.add("editing");
+        saveBtn.classList.add("editing");
+        editBtn.classList.add("editing");
+        editInput.focus();
+      });
+      
+      saveBtn.addEventListener("click", () => {
+        const newName = editInput.value.trim();
+        if (newName === "") {
+          alert("Company name cannot be empty");
+          return;
+        }
+        if (newName !== comp && companies.includes(newName)) {
+          alert("Company name already exists");
+          return;
+        }
+        
+        const oldName = comp;
+        companies[idx] = newName;
+        
+        incomeRecords.forEach(record => {
+          if (record.company === oldName) {
+            record.company = newName;
+          }
+        });
+        
+        if (currentCompany === oldName) {
+          currentCompany = newName;
+        }
+        
+        saveAll();
+        renderJobs();
+        renderCompanyChips();
+        updateSummaryAndForm();
+        refreshReportTable();
+      });
+      
+      deleteBtn.addEventListener("click", () => {
+        if (companies.length <= 1) {
+          alert("Cannot delete the last company. Add a new company first.");
+          return;
+        }
+        if (confirm(`Delete company "${comp}"? All income records for this company will also be deleted.`)) {
+          const index = companies.indexOf(comp);
+          if (index !== -1) companies.splice(index, 1);
+          
+          incomeRecords = incomeRecords.filter(record => record.company !== comp);
+          
+          if (currentCompany === comp) {
+            currentCompany = companies[0];
+          }
+          
+          saveAll();
+          renderJobs();
+          renderCompanyChips();
+          updateSummaryAndForm();
+          refreshReportTable();
+        }
+      });
+      
+      nameSpan.addEventListener("click", () => {
+        currentCompany = comp;
+        saveCurrentSelections();
+        renderJobs();
+        updateSummaryAndForm();
+        refreshReportTable();
+        renderCompanyChips();
+      });
+      
+      jobDiv.appendChild(nameSpan);
+      jobDiv.appendChild(editInput);
+      jobDiv.appendChild(editBtn);
+      jobDiv.appendChild(saveBtn);
+      jobDiv.appendChild(deleteBtn);
+      container.appendChild(jobDiv);
+    });
+  }
+  
+  function addCompany() {
+    const newName = document.getElementById("newJobField").value.trim();
+    if(newName === "") return;
+    if(companies.includes(newName)) { alert("Company already exists"); return; }
+    companies.push(newName);
+    saveAll();
+    renderJobs();
+    currentCompany = newName;
+    saveCurrentSelections();
+    renderJobs();
+    updateSummaryAndForm();
+    refreshReportTable();
+    document.getElementById("newJobField").value = "";
+    renderCompanyChips();
+  }
+  
+  // ==================== UI Rendering ====================
+  function renderMonths() {
+    const container = document.getElementById("monthsContainer");
+    container.innerHTML = "";
+    monthNames.forEach((name, idx) => {
+      const btn = document.createElement("button");
+      btn.className = `ios-segment ${idx === currentMonthIdx ? "active" : ""}`;
+      btn.innerText = name;
+      btn.addEventListener("click", () => { 
+        currentMonthIdx = idx; 
+        saveCurrentSelections();
+        renderMonths(); 
+        updateSummaryAndForm(); 
+        refreshReportTable(); 
+      });
+      container.appendChild(btn);
+    });
+  }
+  
+  function updateMonthSelectors() {
+    const startMonthSel = document.getElementById("startMonthSelect");
+    const endMonthSel = document.getElementById("endMonthSelect");
+    startMonthSel.innerHTML = "";
+    endMonthSel.innerHTML = "";
+    monthNames.forEach((name, idx) => {
+      startMonthSel.appendChild(new Option(name, idx));
+      endMonthSel.appendChild(new Option(name, idx));
+    });
+    startMonthSel.value = reportStartMonth;
+    endMonthSel.value = reportEndMonth;
+  }
+  
+  // ==================== Reports ====================
+  function renderCompanyChips() {
+    const container = document.getElementById("reportCompanyChips");
+    container.innerHTML = "";
+    const allChip = document.createElement("div");
+    allChip.className = `chip ${reportCompanyFilter === "ALL" ? "active" : ""}`;
+    allChip.innerText = "All Companies";
+    allChip.addEventListener("click", () => { 
+      reportCompanyFilter = "ALL"; 
+      saveCurrentSelections();
+      renderCompanyChips(); 
+      refreshReportTable(); 
+    });
+    container.appendChild(allChip);
+    companies.forEach(comp => {
+      const chip = document.createElement("div");
+      chip.className = `chip ${reportCompanyFilter === comp ? "active" : ""}`;
+      chip.innerText = comp;
+      chip.addEventListener("click", () => { 
+        reportCompanyFilter = comp; 
+        saveCurrentSelections();
+        renderCompanyChips(); 
+        refreshReportTable(); 
+      });
+      container.appendChild(chip);
+    });
+  }
+  
+  function getFilteredReportData() {
+    let filtered = incomeRecords.filter(rec => {
+      const recordDate = new Date(rec.year, rec.month, 1);
+      const startDate = new Date(reportStartYear, reportStartMonth, 1);
+      const endDate = new Date(reportEndYear, reportEndMonth, 1);
+      return recordDate >= startDate && recordDate <= endDate;
+    });
+    if(reportCompanyFilter !== "ALL") filtered = filtered.filter(rec => rec.company === reportCompanyFilter);
+    filtered.sort((a,b) => { if(a.year !== b.year) return a.year - b.year; return a.month - b.month; });
+    return filtered;
+  }
+  
+  function refreshReportTable() {
+    const filtered = getFilteredReportData();
+    const tbody = document.getElementById("reportTableBody");
+    if(filtered.length === 0) { 
+      tbody.innerHTML = `<tr><td colspan="6" class="empty-state">📭 No data in selected range & company</td></tr>`; 
+      return; 
+    }
+    let html = "", totalNet = 0, totalAllow = 0, totalTax = 0, totalWorked = 0;
+    for(let rec of filtered) {
+      const worked = calculateWorkedIncome(rec.netSalary, rec.allowances);
+      totalNet += rec.netSalary; 
+      totalAllow += rec.allowances; 
+      totalTax += rec.tax; 
+      totalWorked += worked;
+      html += `<tr>
+        <td>${formatMonthYearDisplay(rec.year, rec.month)}</td>
+        <td>${escapeHtml(rec.company)}</td>
+        <td>${rec.netSalary.toLocaleString()}</td>
+        <td>${rec.allowances.toLocaleString()}</td>
+        <td>${rec.tax.toLocaleString()}</td>
+        <td><strong>${worked.toLocaleString()}</strong></td>
+      </tr>`;
+    }
+    html += `<tr class="total-row">
+      <td colspan="2"><strong>Total</strong></td>
+      <td><strong>${totalNet.toLocaleString()}</strong></td>
+      <td><strong>${totalAllow.toLocaleString()}</strong></td>
+      <td><strong>${totalTax.toLocaleString()}</strong></td>
+      <td><strong>${totalWorked.toLocaleString()}</strong></td>
+    </tr>`;
+    tbody.innerHTML = html;
+  }
+  
+  function applyDateRange() {
+    const startYear = parseInt(document.getElementById("startYearInput").value);
+    const startMonth = parseInt(document.getElementById("startMonthSelect").value);
+    const endYear = parseInt(document.getElementById("endYearInput").value);
+    const endMonth = parseInt(document.getElementById("endMonthSelect").value);
+    if(isNaN(startYear) || isNaN(endYear)) { alert("Please enter valid years"); return; }
+    reportStartYear = startYear; 
+    reportStartMonth = startMonth; 
+    reportEndYear = endYear; 
+    reportEndMonth = endMonth;
+    saveCurrentSelections();
+    if(new Date(reportStartYear, reportStartMonth, 1) > new Date(reportEndYear, reportEndMonth, 1)) { 
+      alert("Start date cannot be after end date"); 
+      return; 
+    }
+    refreshReportTable();
+  }
+  
+  // ==================== Export Functions ====================
+  function downloadCSV() {
+    const filtered = getFilteredReportData();
+    if(!filtered.length) { alert("No data to export"); return; }
+    const headers = ["Month", "Company", "Net Salary (JPY)", "Allowances (JPY)", "Income Tax (JPY)", "Worked Income (JPY)"];
+    const rows = filtered.map(rec => [formatMonthYearDisplay(rec.year, rec.month), rec.company, rec.netSalary, rec.allowances, rec.tax, calculateWorkedIncome(rec.netSalary, rec.allowances)]);
+    let tn=0,ta=0,tt=0,tw=0; 
+    filtered.forEach(r=>{ tn+=r.netSalary; ta+=r.allowances; tt+=r.tax; tw+=calculateWorkedIncome(r.netSalary, r.allowances); });
+    rows.push(["TOTAL", "", tn, ta, tt, tw]);
+    const csv = [headers, ...rows].map(row=>row.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n");
+    const blob = new Blob(["\uFEFF"+csv], {type:"text/csv"}); 
+    const a=document.createElement("a"); 
+    a.href=URL.createObjectURL(blob); 
+    a.download=`income_report_${reportStartYear}-${reportStartMonth+1}_to_${reportEndYear}-${reportEndMonth+1}.csv`; 
+    a.click(); 
+    URL.revokeObjectURL(a.href);
+  }
+  
+  function downloadJSON() {
+    const filtered = getFilteredReportData();
+    if(!filtered.length) { alert("No data to export"); return; }
+    const exportData = { 
+      exportDate: new Date().toISOString(), 
+      dateRange: { start: { year: reportStartYear, month: reportStartMonth+1 }, end: { year: reportEndYear, month: reportEndMonth+1 } }, 
+      companyFilter: reportCompanyFilter, 
+      records: filtered.map(rec => ({ 
+        year: rec.year, 
+        month: rec.month+1, 
+        monthDisplay: formatMonthYearDisplay(rec.year, rec.month), 
+        company: rec.company, 
+        netSalary: rec.netSalary, 
+        allowances: rec.allowances, 
+        tax: rec.tax, 
+        workedIncome: calculateWorkedIncome(rec.netSalary, rec.allowances) 
+      })), 
+      summary: { 
+        totalNetSalary: filtered.reduce((s,r)=>s+r.netSalary,0), 
+        totalAllowances: filtered.reduce((s,r)=>s+r.allowances,0), 
+        totalTax: filtered.reduce((s,r)=>s+r.tax,0), 
+        totalWorkedIncome: filtered.reduce((s,r)=>s+calculateWorkedIncome(r.netSalary, r.allowances),0) 
+      } 
+    };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], {type:"application/json"}); 
+    const a=document.createElement("a"); 
+    a.href=URL.createObjectURL(blob); 
+    a.download=`income_report_${reportStartYear}-${reportStartMonth+1}_to_${reportEndYear}-${reportEndMonth+1}.json`; 
+    a.click(); 
+    URL.revokeObjectURL(a.href);
+  }
+  
+  function escapeHtml(s) { if(!s) return ""; return s.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+  
+  // ==================== Initialization ====================
+  function init() {
+    loadStorage();
+    // Only seed demo data if storage was completely empty (first time user)
+    const wasEmpty = localStorage.getItem("incomeFlowProData") === null;
+    if(wasEmpty && incomeRecords.length === 0) {
+      // First time user - add demo data
+      incomeRecords = [
+        { year: 2024, month: 0, company: "Company A", netSalary: 500000, allowances: 80000, tax: 95000 },
+        { year: 2024, month: 1, company: "Company A", netSalary: 520000, allowances: 75000, tax: 98000 },
+        { year: 2024, month: 0, company: "Company B", netSalary: 420000, allowances: 60000, tax: 78000 }
+      ];
+      saveAll();
+    }
+    
+    renderMonths(); 
+    renderJobs(); 
+    renderCompanyChips();
+    updateSummaryAndForm(); 
+    updateMonthSelectors(); 
+    refreshReportTable();
+    
+    document.getElementById("yearInput").value = currentYear;
+    document.getElementById("startYearInput").value = reportStartYear;
+    document.getElementById("endYearInput").value = reportEndYear;
+    
+    document.getElementById("saveEntryBtn").onclick = saveCurrentEntry;
+    document.getElementById("clearEntryBtn").onclick = clearCurrentEntry;
+    document.getElementById("addJobBtn").onclick = addCompany;
+    document.getElementById("applyRangeBtn").onclick = applyDateRange;
+    document.getElementById("downloadCSVBtn").onclick = downloadCSV;
+    document.getElementById("downloadJSONBtn").onclick = downloadJSON;
+    document.getElementById("setYearBtn").onclick = setYear;
+    document.getElementById("resetAllDataBtn").onclick = showResetModal;
+    document.getElementById("modalCancelBtn").onclick = hideResetModal;
+    document.getElementById("modalConfirmBtn").onclick = resetAllData;
+    
+    document.getElementById("newJobField").addEventListener("keypress", (e) => { if(e.key === "Enter") addCompany(); });
+    document.getElementById("yearInput").addEventListener("keypress", (e) => { if(e.key === "Enter") setYear(); });
+    document.getElementById("resetModal").addEventListener("click", (e) => { if(e.target === document.getElementById("resetModal")) hideResetModal(); });
+  }
+  
+  init();
 </script>
-
 </body>
 </html>
