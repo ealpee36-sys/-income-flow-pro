@@ -5,7 +5,6 @@ function render() {
   const totalEl = document.getElementById("total");
 
   list.innerHTML = "";
-
   let total = 0;
 
   incomes.forEach((amount, index) => {
