@@ -1,7 +1,7 @@
 {
-  "name": "IncomeFlow Pro",
-  "short_name": "IncomeFlow",
-  "start_url": "/index.html",
+  "name": "Income Flow Pro",
+  "short_name": "Income",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#007aff",
