@@ -9,7 +9,9 @@
   <meta name="apple-mobile-web-app-title" content="IncomeFlow Pro">
   <meta name="description" content="Professional Income & Salary Manager with JPY currency - Track salary, allowances, tax, and generate reports">
   <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23007aff'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='Arial'%3E💰%3C/text%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <title>IncomeFlow Pro — Salary Manager</title>
   <style>
     * {
@@ -597,7 +599,7 @@
       <table class="ios-table">
         <thead><tr><th>Month</th><th>Company</th><th>Net Salary (¥)</th><th>Allowances (¥)</th><th>Tax (¥)</th><th>Worked Income (¥)</th></tr></thead>
         <tbody id="reportTableBody"><tr><td colspan="6" class="empty-state">Select date range & company to view reports</td></tr></tbody>
-      .</
+      追赶
     </div>
     <div class="download-bar">
       <button id="downloadCSVBtn" class="ios-button ios-button-green">📎 Download CSV</button>
@@ -635,9 +637,6 @@
   let reportEndMonth = 11;
   let reportCompanyFilter = "ALL";
   
-  // Flag to track if demo data has been seeded
-  let demoSeeded = false;
-  
   // ==================== PWA Installation ====================
   let deferredPrompt = null;
   const installBanner = document.getElementById('installBanner');
@@ -664,6 +663,13 @@
     installBanner.classList.add('hidden');
     deferredPrompt = null;
   });
+  
+  // Register Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(reg => console.log('Service Worker registered:', reg))
+      .catch(err => console.log('Service Worker registration failed:', err));
+  }
   
   // ==================== Helper Functions ====================
   function formatMonthYearDisplay(year, monthIdx) {
@@ -703,7 +709,6 @@
       companies = ["Company A", "Company B"];
     }
     
-    // Load current selections
     const storedCurrentYear = localStorage.getItem("incomeFlowProCurrentYear");
     if(storedCurrentYear) currentYear = parseInt(storedCurrentYear);
     
@@ -758,7 +763,6 @@
   }
   
   function resetAllData() {
-    // Clear all data
     incomeRecords = [];
     companies = ["Company A", "Company B"];
     currentCompany = "Company A";
@@ -770,10 +774,8 @@
     reportEndMonth = 11;
     reportCompanyFilter = "ALL";
     
-    // Save empty state to localStorage
     saveAll();
     
-    // Re-render everything
     renderJobs();
     renderCompanyChips();
     updateSummaryAndForm();
@@ -781,7 +783,6 @@
     updateMonthSelectors();
     renderMonths();
     
-    // Update input fields
     document.getElementById("yearInput").value = currentYear;
     document.getElementById("startYearInput").value = reportStartYear;
     document.getElementById("endYearInput").value = reportEndYear;
@@ -1170,10 +1171,8 @@
   // ==================== Initialization ====================
   function init() {
     loadStorage();
-    // Only seed demo data if storage was completely empty (first time user)
     const wasEmpty = localStorage.getItem("incomeFlowProData") === null;
     if(wasEmpty && incomeRecords.length === 0) {
-      // First time user - add demo data
       incomeRecords = [
         { year: 2024, month: 0, company: "Company A", netSalary: 500000, allowances: 80000, tax: 95000 },
         { year: 2024, month: 1, company: "Company A", netSalary: 520000, allowances: 75000, tax: 98000 },
